@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.capeelectric.exception.InspectionException;
 import com.capeelectric.exception.InstalReportException;
@@ -24,6 +26,8 @@ import com.capeelectric.service.AWSEmailService;
  * @author capeelectricsoftware
  *
  */
+@RestController
+@RequestMapping("api/email/v1")
 public class EmailGenerationController {
 
 private static final Logger logger = LoggerFactory.getLogger(EmailGenerationController.class);
@@ -38,7 +42,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailGenerationCont
 			SummaryException, Exception {
 		logger.info("called sendFinalPDF function userName: {},siteId : {}, siteName : {}", user,id,name);
 
-		awsEmailService.sendEmailPDF(user,id,id,name);
+		awsEmailService.sendEmailPDF(user,id,id,name, type);
 
 		return new ResponseEntity<byte[]>(HttpStatus.OK);
 	}
@@ -53,6 +57,15 @@ private static final Logger logger = LoggerFactory.getLogger(EmailGenerationCont
 	public void sendEmailForComments(@PathVariable String toEmail, @PathVariable String ccEmail, @PathVariable String content) throws MessagingException {
 		logger.info("Calling email service for comments");
 		awsEmailService.sendEmail(toEmail, ccEmail, content);
+	}
+	
+	@GetMapping(value = "/health")
+	public ResponseEntity<?> health() throws Exception {
+	    try {
+	        return ResponseEntity.status(200).body("Ok");
+	    } catch (Exception e) {
+	        return (ResponseEntity<?>) ResponseEntity.internalServerError().body(e.getMessage());
+	    }
 	}
 	
 }

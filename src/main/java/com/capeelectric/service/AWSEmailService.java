@@ -205,7 +205,7 @@ public class AWSEmailService {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public void sendEmailPDF(String userName, Integer siteId, int count, String keyname)
+	public void sendEmailPDF(String userName, Integer siteId, int count, String keyname, String type)
 			throws MessagingException, DocumentException, IOException, InterruptedException {
 
 		String to = userName;
@@ -234,8 +234,29 @@ public class AWSEmailService {
 					.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
 			String filename = keyname+".pdf";
 			S3Object fullObject;
+			String description = null;
+			switch(type) {
+				case "LV":
+					description = "LV_Site Name_";
+					break;
+				case "LPS":
+					description = "LPS_Project Name_";
+					break;
+				case "EMC":
+					description = "EMC_Pdf Name_";
+					break;
+				case "RISK":
+					description = "RiskAssessment_Project Name_";
+					break;
+				case "SLD":
+					description = "SLD";
+					break;
+				default :
+					description = "EMPTY";
+					break;
+			}
 			fullObject = s3Client
-					.getObject(new GetObjectRequest(s3BucketName, "LV_Site Name_".concat(keyname) + "/" + filename));
+					.getObject(new GetObjectRequest(s3BucketName, description.concat(keyname) + "/" + filename));
 
 			InputStream in = fullObject.getObjectContent();
 			byte[] buf = new byte[1024];
