@@ -27,7 +27,7 @@ import com.capeelectric.service.AWSEmailService;
  *
  */
 @RestController
-@RequestMapping("api/email/v1")
+@RequestMapping("/api/email/v1")
 public class EmailGenerationController {
 
 private static final Logger logger = LoggerFactory.getLogger(EmailGenerationController.class);
@@ -35,7 +35,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailGenerationCont
 	@Autowired
 	private AWSEmailService awsEmailService;
 
-	@GetMapping("/sendPDFinMail/{user}/{type}/{id}/{name}")
+	@GetMapping("/sendPDFInMail/{user}/{type}/{id}/{name}")
 	public ResponseEntity<byte[]> sendFinalPDF(@PathVariable String user, @PathVariable String type,
 			@PathVariable Integer id, @PathVariable String name)
 			throws InstalReportException, SupplyCharacteristicsException, InspectionException, PeriodicTestingException,
@@ -47,13 +47,19 @@ private static final Logger logger = LoggerFactory.getLogger(EmailGenerationCont
 		return new ResponseEntity<byte[]>(HttpStatus.OK);
 	}
 	
-	@GetMapping("/generateEmail/{email}/{content}")
+	@GetMapping("/sendEmail/{email}/{content}")
 	public void sendEmail(@PathVariable String email, @PathVariable String content) throws MessagingException {
 		logger.info("Calling the email service");
 		awsEmailService.sendEmail(email, content);
 	}
 	
-	@GetMapping("/generateEmailForComments/{toEmail}/{ccEmail}/{content}")
+	@GetMapping("/sendEmailToAdmin/{content}")
+	public void sendEmailToAdmin(@PathVariable String content) throws MessagingException {
+		logger.info("Calling the email service for admin");
+		awsEmailService.sendEmailToAdmin(content);
+	}
+	
+	@GetMapping("/sendEmailForComments/{toEmail}/{ccEmail}/{content}")
 	public void sendEmailForComments(@PathVariable String toEmail, @PathVariable String ccEmail, @PathVariable String content) throws MessagingException {
 		logger.info("Calling email service for comments");
 		awsEmailService.sendEmail(toEmail, ccEmail, content);
