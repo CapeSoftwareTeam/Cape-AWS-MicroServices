@@ -28,9 +28,9 @@ import com.capeelectric.service.AWSEmailService;
  */
 @RestController
 @RequestMapping("/api/email/v1")
-public class EmailGenerationController {
+public class AWSDetailsController {
 
-private static final Logger logger = LoggerFactory.getLogger(EmailGenerationController.class);
+private static final Logger logger = LoggerFactory.getLogger(AWSDetailsController.class);
 	
 	@Autowired
 	private AWSEmailService awsEmailService;

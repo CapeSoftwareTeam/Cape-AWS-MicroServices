@@ -60,9 +60,6 @@ public class AWSEmailService {
 	@Value("${access.key.secret}")
 	private String accessKeySecret;
 	
-	@Value("${app.email.host}")
-	private String EMAIL_HOST_NAME;
-	
 	@Value("${app.email.subject}")
 	private String EMAIL_SUBJECT;
 	
@@ -101,7 +98,7 @@ public class AWSEmailService {
 
 			Properties props = new Properties();
 			props.put("mail.transport.protocol", "smtp");
-			props.put("mail.smtp.host", EMAIL_HOST_NAME);
+			props.put("mail.smtp.host", emailConfig.getSMTP_HOST_NAME());
 			props.put("mail.smtp.auth", "false");
 			props.put("mail.smtp.starttls.enable", "true");
 
@@ -117,7 +114,7 @@ public class AWSEmailService {
 			message.setSentDate(new Date());
 			message.setFrom(new InternetAddress(FROM));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(TO));
-			transport.connect(EMAIL_HOST_NAME, Integer.valueOf(AWS_EMAIL_PORT),
+			transport.connect(emailConfig.getSMTP_HOST_NAME(), Integer.valueOf(AWS_EMAIL_PORT),
 					emailConfig.getSMTP_AUTH_USER(), emailConfig.getSMTP_AUTH_PWD());
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 			transport.close();
@@ -134,7 +131,7 @@ public class AWSEmailService {
 
 			Properties props = new Properties();
 			props.put("mail.transport.protocol", "smtp");
-			props.put("mail.smtp.host", EMAIL_HOST_NAME);
+			props.put("mail.smtp.host", emailConfig.getSMTP_HOST_NAME());
 			props.put("mail.smtp.auth", "false");
 			props.put("mail.smtp.starttls.enable", "true");
 
@@ -150,7 +147,7 @@ public class AWSEmailService {
 			message.setSentDate(new Date());
 			message.setFrom(new InternetAddress(FROM));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(TO));
-			transport.connect(EMAIL_HOST_NAME, Integer.valueOf(AWS_EMAIL_PORT),
+			transport.connect(emailConfig.getSMTP_HOST_NAME(), Integer.valueOf(AWS_EMAIL_PORT),
 					emailConfig.getSMTP_AUTH_USER(), emailConfig.getSMTP_AUTH_PWD());
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 			transport.close();
@@ -171,7 +168,7 @@ public class AWSEmailService {
 			logger.debug("Inside AWS Email");
 			Properties props = new Properties();
 			props.put("mail.transport.protocol", "smtp");
-			props.put("mail.smtp.host", EMAIL_HOST_NAME);
+			props.put("mail.smtp.host", emailConfig.getSMTP_HOST_NAME());
 			props.put("mail.smtp.auth", "false");
 			props.put("mail.smtp.starttls.enable", "true");
 
@@ -188,7 +185,7 @@ public class AWSEmailService {
 			message.setFrom(new InternetAddress(FROM));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 			message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccEmail));
-			transport.connect(EMAIL_HOST_NAME, Integer.valueOf(AWS_EMAIL_PORT),
+			transport.connect(emailConfig.getSMTP_HOST_NAME(), Integer.valueOf(AWS_EMAIL_PORT),
 					emailConfig.getSMTP_AUTH_USER(), emailConfig.getSMTP_AUTH_PWD());
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.CC));
@@ -212,7 +209,7 @@ public class AWSEmailService {
 		String from = FROM;
 		Properties props = new Properties();
 		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.host", EMAIL_HOST_NAME);
+		props.put("mail.smtp.host", emailConfig.getSMTP_HOST_NAME());
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		Session mailSession = Session.getDefaultInstance(props);
@@ -269,15 +266,12 @@ public class AWSEmailService {
 			}
 			out.close();
 			in.close();
-
-			
-
 			DataSource source = new FileDataSource(filename);
 			messageBodyPart.setDataHandler(new DataHandler(source));
 			messageBodyPart.setFileName(filename);
 			multipart.addBodyPart(messageBodyPart);
 			message.setContent(multipart);
-			transport.connect(EMAIL_HOST_NAME, Integer.valueOf(AWS_EMAIL_PORT),
+			transport.connect(emailConfig.getSMTP_HOST_NAME(), Integer.valueOf(AWS_EMAIL_PORT),
 					emailConfig.getSMTP_AUTH_USER(), emailConfig.getSMTP_AUTH_PWD());
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 			transport.close();
