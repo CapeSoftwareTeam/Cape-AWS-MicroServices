@@ -221,7 +221,7 @@ public class AWSEmailService {
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 			message.setSubject(EMAIL_SUBJECT);
 			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setText("Please find the attached final pdf submitted");
+			messageBodyPart.setText("Please find the attached " +type+ " final pdf submitted");
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
 			messageBodyPart = new MimeBodyPart();
