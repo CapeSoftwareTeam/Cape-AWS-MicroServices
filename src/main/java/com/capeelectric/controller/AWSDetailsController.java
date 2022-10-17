@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,7 @@ import com.capeelectric.exception.PeriodicTestingException;
 import com.capeelectric.exception.SummaryException;
 import com.capeelectric.exception.SupplyCharacteristicsException;
 import com.capeelectric.service.AWSEmailService;
+import com.capeelectric.util.EmailContent;
 
 /**
  * @author capeelectricsoftware
@@ -53,16 +56,22 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 		awsEmailService.sendEmail(email, content);
 	}
 	
-	@GetMapping("/sendEmailToAdmin/{content}")
-	public void sendEmailToAdmin(@PathVariable String content) throws MessagingException {
+	@PutMapping("/sendEmailToAdmin")
+	public void sendEmailToAdmin(@RequestBody EmailContent content) throws MessagingException {
 		logger.info("Calling the email service for admin");
-		awsEmailService.sendEmailToAdmin(content);
+		awsEmailService.sendEmailToAdmin(content.getContentDetails());
 	}
 	
-	@GetMapping("/sendEmailForComments/{toEmail}/{ccEmail}/{content}")
-	public void sendEmailForComments(@PathVariable String toEmail, @PathVariable String ccEmail, @PathVariable String content) throws MessagingException {
+	@PutMapping("/sendEmailForComments/{toEmail}/{ccEmail}")
+	public void sendEmailForComments(@PathVariable String toEmail, @PathVariable String ccEmail, @RequestBody EmailContent content) throws MessagingException {
 		logger.info("Calling email service for comments");
-		awsEmailService.sendEmail(toEmail, ccEmail, content);
+		awsEmailService.sendEmail(toEmail, ccEmail, content.getContentDetails());
+	}
+	
+	@PutMapping("/sendEmailForApproval/{email}")
+	public void sendEmailForApproval(@PathVariable String email, @RequestBody EmailContent content) throws MessagingException {
+		logger.info("Calling email service for comments");
+		awsEmailService.sendEmail(email, content.getContentDetails());
 	}
 	
 	@GetMapping(value = "/health")
