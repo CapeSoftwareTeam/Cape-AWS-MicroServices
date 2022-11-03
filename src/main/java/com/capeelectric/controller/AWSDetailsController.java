@@ -56,6 +56,12 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 		awsEmailService.sendEmail(email, content);
 	}
 	
+	@PutMapping("/sendEmailToUser/{email}")
+    public void sendEmail(@PathVariable String email, @RequestBody EmailContent content) throws MessagingException {
+        logger.info("Calling the email to User : {}"+email);
+        awsEmailService.sendEmail(email, content.getContentDetails());
+    }
+	
 	@PutMapping("/sendEmailToAdmin")
 	public void sendEmailToAdmin(@RequestBody EmailContent content) throws MessagingException {
 		logger.info("Calling the email service for admin");
