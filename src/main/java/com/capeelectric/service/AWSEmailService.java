@@ -14,8 +14,10 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -46,7 +48,10 @@ import com.itextpdf.text.DocumentException;
 public class AWSEmailService {
 
 	@Value("${app.from.email}")
-	private String FROM;;
+	private String FROM;
+	
+	@Value("${app.from.lms.email}")
+	private String lmsEmail;
 
 	@Value("${app.email.disable}")
 	private String emailDisable;
@@ -91,7 +96,17 @@ public class AWSEmailService {
 	 * @throws IOException
 	 */
 	public void sendEmail(String email, String content) throws MessagingException {
+		String applicationType = "NonLMS";
+		sendEmailLogic(email, content, applicationType);
+	}
+	
+	public void sendEmailForLMS(String email, String content) throws MessagingException {
+		String application = "LMS";
+		sendEmailLogic(email, content, application);
+	}
 
+	private void sendEmailLogic(String email, String content, String application)
+			throws NoSuchProviderException, MessagingException, AddressException {
 		if (!emailDisable.equalsIgnoreCase("Y")) {
 			logger.debug("Inside AWS Email");
 			final String TO = email; // {YOUR_RECIPIENT_EMAIL_ADDRESS}
@@ -112,16 +127,15 @@ public class AWSEmailService {
 			message.setSubject(EMAIL_SUBJECT);
 			message.setContent(content, "text/plain");
 			message.setSentDate(new Date());
-			message.setFrom(new InternetAddress(FROM));
+			message.setFrom(new InternetAddress(application.equalsIgnoreCase("LMS") ? lmsEmail : FROM));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(TO));
 			transport.connect(emailConfig.getSMTP_HOST_NAME(), Integer.valueOf(AWS_EMAIL_PORT),
 					emailConfig.getSMTP_AUTH_USER(), emailConfig.getSMTP_AUTH_PWD());
 			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 			transport.close();
 		}
-
 	}
-
+	
 	public void sendEmailToAdmin(String content) throws MessagingException {
 
 		if (!emailDisable.equalsIgnoreCase("Y")) {
