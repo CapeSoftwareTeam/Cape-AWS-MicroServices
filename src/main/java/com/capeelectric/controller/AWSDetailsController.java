@@ -59,7 +59,7 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 	@PutMapping("/sendEmailToUser/{email}")
     public void sendEmail(@PathVariable String email, @RequestBody EmailContent content) throws MessagingException {
         logger.info("Calling the email to User : {}"+email);
-        awsEmailService.sendEmail(email, content.getContentDetails());
+        awsEmailService.sendEmailForLMS(email, content.getContentDetails());
     }
 	
 	@PutMapping("/sendEmailToAdmin")
@@ -80,11 +80,11 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 		awsEmailService.sendEmail(email, content.getContentDetails());
 	}
 	
-	@GetMapping("/sendEmailForLMS/{email}/{content}")
-	public void sendEmailForLMS(@PathVariable String email, @PathVariable String content) throws MessagingException {
-		logger.info("Calling the email service");
-		awsEmailService.sendEmailForLMS(email, content);
-	}
+//	@GetMapping("/sendEmailForLMS/{email}/{content}")
+//	public void sendEmailForLMS(@PathVariable String email, @PathVariable String content) throws MessagingException {
+//		logger.info("Calling the email service");
+//		awsEmailService.sendEmailForLMS(email, content);
+//	}
 	
 	@GetMapping(value = "/health")
 	public ResponseEntity<?> health() throws Exception {
