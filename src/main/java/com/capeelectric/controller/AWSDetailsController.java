@@ -55,7 +55,7 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 		logger.info("Calling the email service");
 		awsEmailService.sendEmail(email, content);
 	}
-	
+		
 	@PutMapping("/sendEmailToUser/{email}")
     public void sendEmail(@PathVariable String email, @RequestBody EmailContent content) throws MessagingException {
         logger.info("Calling the email to User : {}"+email);
@@ -65,6 +65,7 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 	@PutMapping("/sendEmailToAdmin")
 	public void sendEmailToAdmin(@RequestBody EmailContent content) throws MessagingException {
 		logger.info("Calling the email service for admin");
+		logger.debug("For Admin Email Content : ",content.getContentDetails());
 		awsEmailService.sendEmailToAdmin(content.getContentDetails());
 	}
 	
@@ -77,6 +78,8 @@ private static final Logger logger = LoggerFactory.getLogger(AWSDetailsControlle
 	@PutMapping("/sendEmailForApproval/{email}")
 	public void sendEmailForApproval(@PathVariable String email, @RequestBody EmailContent content) throws MessagingException {
 		logger.info("Calling email service for comments");
+		logger.debug("Client Email is :", email);
+		logger.debug("Email content is  :", content.getContentDetails());
 		awsEmailService.sendEmail(email, content.getContentDetails());
 	}
 	
